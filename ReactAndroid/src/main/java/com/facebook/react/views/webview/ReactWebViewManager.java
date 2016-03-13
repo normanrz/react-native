@@ -20,6 +20,8 @@ import android.os.Build;
 import android.text.TextUtils;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.webkit.WebChromeClient;
+import android.webkit.GeolocationPermissions;
 
 import com.facebook.catalyst.views.webview.events.TopLoadingErrorEvent;
 import com.facebook.catalyst.views.webview.events.TopLoadingFinishEvent;
@@ -245,6 +247,12 @@ public class ReactWebViewManager extends SimpleViewManager<WebView> {
     ReactWebView webView = new ReactWebView(reactContext);
     reactContext.addLifecycleEventListener(webView);
     mWebViewConfig.configWebView(webView);
+
+    webView.setWebChromeClient(new WebChromeClient() {
+      public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
+        callback.invoke(origin, true, false);
+      }
+    });
 
     if (ReactBuildConfig.DEBUG && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
       WebView.setWebContentsDebuggingEnabled(true);
